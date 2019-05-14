@@ -11,7 +11,11 @@ make src/common/options.h CC="$clang"
 
 # Build the common source files.
 rm -f *.o
-"$clang" -c src/common/*.c -D_WASI_EMULATED_MMAN -O2
+"$clang" -c -O2 -D_WASI_EMULATED_MMAN \
+    -Werror=incompatible-pointer-types \
+    -Werror=missing-declarations \
+    -Werror=implicit-function-declaration \
+    src/common/*.c
 "$ar" cr libcommon.a *.o
 rm -f *.o
 
