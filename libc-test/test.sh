@@ -45,19 +45,17 @@ for i in src/api/*.c; do
 done 2>&1 | tee -a full.log
 
 # Compile and run the execution tests
-for i in functional math musl regression; do
-    for j in src/"$i"/*.c; do
-        echo "Execution test $j..." | tee -a pass-fail.log
-        "$clang" \
-            -Wno-unknown-pragmas \
-            "$j" libcommon.a \
-            -I src/common \
-            -D_WASI_EMULATED_MMAN -D_ALL_SOURCE \
-            -lc-printscan-long-double -lwasi-emulated-mman && \
-        "$runner" a.out && \
-        (echo " - PASS" | tee -a pass-fail.log) || \
-        (echo " - FAIL" | tee -a pass-fail.log)
-    done
+for i in src/{functional,math,musl,regression}/*.c; do
+    echo "Execution test $i..." | tee -a pass-fail.log
+    "$clang" \
+        -Wno-unknown-pragmas \
+        "$i" libcommon.a \
+        -I src/common \
+        -D_WASI_EMULATED_MMAN -D_ALL_SOURCE \
+        -lc-printscan-long-double -lwasi-emulated-mman && \
+    "$runner" a.out && \
+    (echo " - PASS" | tee -a pass-fail.log) || \
+    (echo " - FAIL" | tee -a pass-fail.log)
 done 2>&1 | tee -a full.log
 
 rm -f a.out
